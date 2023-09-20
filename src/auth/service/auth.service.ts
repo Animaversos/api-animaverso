@@ -3,8 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LoginReturnDto, UserDto } from './dto/login-return.dto';
-import { LoginDto } from './dto/login.dto';
+import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
+import { LoginReturnDto, UserDto } from '../dto/login-return.dto';
+import { LoginDto } from '../dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -61,8 +62,15 @@ export class AuthService {
     }
   }
 
+  async registrar(createUsuarioDto: CreateUsuarioDto) {
+    return await this.repository.usuario.create({
+      data: createUsuarioDto,
+    });
+  }
+
   private generateRefreshToken(userId: string) {
     const payload = { userId: userId, time: new Date().getMilliseconds() };
+
     return this.jwtService.sign(payload, {
       secret: this.configService.get('REFRESH_SECRET_KEY'),
       expiresIn: `${this.configService.get('REFRESH_SECRET_KEY_EXPIRATION')}s`,
