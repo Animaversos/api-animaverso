@@ -7,6 +7,8 @@ import {
 } from 'class-validator';
 
 export class CreateUsuarioDto {
+  id: number;
+
   @IsNotEmpty({ message: 'Nome é obrigatório' })
   @MinLength(3, { message: 'Nome deve ter no mínimo 3 caracteres' })
   nome: string;

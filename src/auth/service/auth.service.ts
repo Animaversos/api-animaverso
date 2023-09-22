@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { LoginReturnDto, UserDto } from '../dto/login-return.dto';
 import { LoginDto } from '../dto/login.dto';
+import { Usuario } from '../../usuarios/entities/usuario.entity';
 
 @Injectable()
 export class AuthService {
@@ -62,10 +63,14 @@ export class AuthService {
     }
   }
 
-  async registrar(createUsuarioDto: CreateUsuarioDto) {
-    return await this.repository.usuario.create({
-      data: createUsuarioDto,
-    });
+  async registrar(createUsuarioDto: CreateUsuarioDto): Promise<Usuario> {
+    try {
+      return this.repository.usuario.create({
+        data: createUsuarioDto,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   private generateRefreshToken(userId: string) {
@@ -78,7 +83,7 @@ export class AuthService {
   }
 
   private async returnUsuario(usuario: string): Promise<any> {
-    return await this.repository.usuario.findUnique({
+    return this.repository.usuario.findUnique({
       where: { usuario: usuario },
     });
   }
