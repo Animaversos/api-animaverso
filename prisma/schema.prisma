@@ -7,12 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Usuario {
+  id           Int            @id @default(autoincrement())
+  nome         String
+  usuario      String         @unique
+  senha        String
+  email        String         @unique
+  cpf          String         @unique
+  refreshToken RefreshToken[]
 
-model usuario {
-  id    Int     @default(autoincrement()) @id
-  nome  String
-  usuario String @unique
-  senha String
-  email String  @unique
-  cpf  String @unique
+  @@map("usuario")
+}
+
+model RefreshToken {
+  id           Int      @id @default(autoincrement())
+  refreshToken String
+  usuarioId    Int?
+  usuario      Usuario? @relation(fields: [usuarioId], references: [id])
+
+  @@map("refresh_token")
 }

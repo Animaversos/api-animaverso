@@ -42,7 +42,12 @@ export class AuthService {
         payloadAccess.sub.toString(),
       );
 
-      //TODO - Salva refresh token no banco de dados
+      await this.repository.refreshToken.create({
+        data: {
+          refreshToken: refresToken,
+          usuario: { connect: { id: user.id } },
+        },
+      });
 
       const userDto: UserDto = {
         id: user.id,
@@ -56,6 +61,7 @@ export class AuthService {
         usuario: userDto,
       };
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         error.message || 'Erro ao realizar login',
         HttpStatus.BAD_REQUEST,
@@ -65,6 +71,7 @@ export class AuthService {
 
   async registrar(createUsuarioDto: CreateUsuarioDto): Promise<Usuario> {
     try {
+      createUsuarioDto.senha = await bcrypt.hash(createUsuarioDto.senha, 10);
       return this.repository.usuario.create({
         data: createUsuarioDto,
       });
