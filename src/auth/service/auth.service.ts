@@ -61,7 +61,6 @@ export class AuthService {
         usuario: userDto,
       };
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         error.message || 'Erro ao realizar login',
         HttpStatus.BAD_REQUEST,
