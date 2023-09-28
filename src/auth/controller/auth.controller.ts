@@ -4,10 +4,15 @@ import { Public } from '../../decorators/public.decorator';
 import { LoginReturnDto } from '../dto/login-return.dto';
 import { LoginDto } from '../dto/login.dto';
 import { AuthService } from '../service/auth.service';
+import * as crypto from 'crypto';
+import { EmailService } from '../../email/email.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly emailService: EmailService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Public()
@@ -30,5 +35,14 @@ export class AuthController {
       email: usuario.email,
       cpf: usuario.cpf,
     };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('recuperar-senha')
+  async recuperarSenha() {
+    const token = crypto.randomBytes(10).toString('hex');
+    await this.emailService.sendEmail();
+    console.log(process.env.RESEND_API_KEY);
   }
 }

@@ -8,22 +8,23 @@ datasource db {
 }
 
 model Usuario {
-  id           Int            @id @default(autoincrement())
-  nome         String
-  usuario      String         @unique
-  senha        String
-  email        String         @unique
-  cpf          String         @unique
-  refreshToken RefreshToken[]
+  id        Int        @id @default(autoincrement())
+  nome      String
+  usuario   String     @unique
+  senha     String
+  email     String     @unique
+  cpf       String     @unique
+  authTable AuthTable?
 
   @@map("usuario")
 }
 
-model RefreshToken {
-  id           Int      @id @default(autoincrement())
-  refreshToken String
-  usuarioId    Int?
-  usuario      Usuario? @relation(fields: [usuarioId], references: [id])
+model AuthTable {
+  id                 Int     @id @default(autoincrement())
+  refreshToken       String?
+  recuperaSenhaToken String?
+  usuarioId          Int     @unique
+  usuario            Usuario @relation(fields: [usuarioId], references: [id])
 
-  @@map("refresh_token")
+  @@map("auth_table")
 }

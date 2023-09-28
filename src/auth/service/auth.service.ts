@@ -41,13 +41,22 @@ export class AuthService {
       const refresToken = this.generateRefreshToken(
         payloadAccess.sub.toString(),
       );
-
-      await this.repository.refreshToken.create({
-        data: {
-          refreshToken: refresToken,
-          usuario: { connect: { id: user.id } },
-        },
+      const authEntity = await this.repository.authTable.findUnique({
+        where: { usuarioId: user.id },
       });
+      if (!authEntity) {
+        await this.repository.authTable.create({
+          data: {
+            refreshToken: refresToken,
+            usuario: { connect: { id: user.id } },
+          },
+        });
+      } else {
+        await this.repository.authTable.update({
+          where: { id: authEntity.id },
+          data: { refreshToken: refresToken },
+        });
+      }
 
       const userDto: UserDto = {
         id: user.id,
