@@ -8,6 +8,12 @@ import { LoginReturnDto, UserDto } from '../dto/login-return.dto';
 import { LoginDto } from '../dto/login.dto';
 import { Usuario } from '../../usuarios/entities/usuario.entity';
 import { EmailService } from '../../email/email.service';
+import {
+  AtualizarSenhaEsquecidaDto,
+  RecuperarSenhaData,
+  ReturnMessage,
+  VerifyPasswordData,
+} from '../types';
 
 const { randomBytes } = require('crypto');
 
@@ -115,7 +121,7 @@ export class AuthService {
     }
   }
 
-  async recuperarSenha(data: { email: string }): Promise<{ message: string }> {
+  async recuperarSenha(data: RecuperarSenhaData): Promise<ReturnMessage> {
     const usuario = await this.repository.usuario.findFirst({
       where: { email: data.email },
     });
@@ -152,12 +158,10 @@ export class AuthService {
     };
   }
 
-  async atualizSenhaEsquecida(
-    senha: { senha: string },
+  async atualizarSenhaEsquecida(
+    dto: AtualizarSenhaEsquecidaDto,
     token: string,
-  ): Promise<{
-    message: string;
-  }> {
+  ): Promise<ReturnMessage> {
     if (!token) {
       throw new HttpException('Token não encontrado', HttpStatus.BAD_REQUEST);
     }
@@ -185,13 +189,13 @@ export class AuthService {
       where: { id: hasAuthTable.usuarioId },
     });
 
-    const isSenhaIgual = await bcrypt.compare(senha.senha, usuario.senha);
+    const isSenhaIgual = await bcrypt.compare(dto.senha, usuario.senha);
 
     if (isSenhaIgual) {
       throw new HttpException('Senha igual a anterior', HttpStatus.BAD_REQUEST);
     }
 
-    const senhaHash = await bcrypt.hash(senha.senha, 10);
+    const senhaHash = await bcrypt.hash(dto.senha, 10);
 
     await this.repository.usuario.update({
       where: { id: usuario.id },
@@ -208,8 +212,3 @@ export class AuthService {
     };
   }
 }
-
-type VerifyPasswordData = {
-  senha_login: string;
-  senha_usuario: string;
-};

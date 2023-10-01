@@ -12,6 +12,11 @@ import { LoginReturnDto } from '../dto/login-return.dto';
 import { LoginDto } from '../dto/login.dto';
 import { AuthService } from '../service/auth.service';
 import { EmailService } from '../../email/email.service';
+import {
+  AtualizarSenhaEsquecidaDto,
+  RecuperarSenhaData,
+  ReturnMessage,
+} from '../types';
 
 @Controller('auth')
 export class AuthController {
@@ -46,7 +51,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('recuperar-senha')
-  async recuperarSenha(@Body() email: { email: string }) {
+  async recuperarSenha(
+    @Body() email: RecuperarSenhaData,
+  ): Promise<ReturnMessage> {
     return await this.authService.recuperarSenha(email);
   }
 
@@ -55,8 +62,8 @@ export class AuthController {
   @Post('/atualiza-senha-esquecida/:token')
   async atualizarSenhaEsquecida(
     @Param('token') token: string,
-    @Body() senha: { senha: string },
-  ) {
-    return await this.authService.atualizSenhaEsquecida(senha, token);
+    @Body() dto: AtualizarSenhaEsquecidaDto,
+  ): Promise<ReturnMessage> {
+    return await this.authService.atualizarSenhaEsquecida(dto, token);
   }
 }
