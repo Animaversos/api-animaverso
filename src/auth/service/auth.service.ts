@@ -7,6 +7,9 @@ import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { LoginReturnDto, UserDto } from '../dto/login-return.dto';
 import { LoginDto } from '../dto/login.dto';
 import { Usuario } from '../../usuarios/entities/usuario.entity';
+import { EmailService } from '../../email/email.service';
+
+const { randomBytes } = require('crypto');
 
 @Injectable()
 export class AuthService {
@@ -14,6 +17,7 @@ export class AuthService {
     private readonly repository: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
 
   async login(usuario: LoginDto): Promise<LoginReturnDto> {
@@ -109,6 +113,99 @@ export class AuthService {
     if (!isSenha) {
       throw new HttpException('Senha inválida', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async recuperarSenha(data: { email: string }): Promise<{ message: string }> {
+    const usuario = await this.repository.usuario.findFirst({
+      where: { email: data.email },
+    });
+
+    if (!usuario) {
+      throw new HttpException('Usuário não encontrado', HttpStatus.BAD_REQUEST);
+    }
+    const tokenRecuperarSenha = randomBytes(32).toString('hex');
+
+    const authTableUser = await this.repository.authTable.findUnique({
+      where: { usuarioId: usuario.id },
+    });
+
+    if (!authTableUser) {
+      await this.repository.authTable.create({
+        data: {
+          usuarioId: usuario.id,
+          recuperaSenhaToken: tokenRecuperarSenha,
+        },
+      });
+    } else {
+      await this.repository.authTable.update({
+        where: { id: authTableUser.id },
+        data: {
+          recuperaSenhaToken: tokenRecuperarSenha,
+        },
+      });
+    }
+    console.log(tokenRecuperarSenha);
+    // await this.emailService.sendEmail(); TODO - DEVE ENVIAR O EMAIL COM O TOKEN PARA O USUARIO
+
+    return {
+      message: 'Foi enviado um email com instruções para resetar sua senha',
+    };
+  }
+
+  async atualizSenhaEsquecida(
+    senha: { senha: string },
+    token: string,
+  ): Promise<{
+    message: string;
+  }> {
+    if (!token) {
+      throw new HttpException('Token não encontrado', HttpStatus.BAD_REQUEST);
+    }
+    const hasAuthTable = await this.repository.authTable.findFirst({
+      select: {
+        usuarioId: true,
+        recuperaSenhaToken: true,
+      },
+      where: {
+        recuperaSenhaToken: {
+          startsWith: token.toString(),
+        },
+      },
+    });
+
+    if (!hasAuthTable) {
+      throw new HttpException('Token inexistente!', HttpStatus.BAD_REQUEST);
+    }
+
+    if (hasAuthTable.recuperaSenhaToken !== token) {
+      throw new HttpException('Token inválido!', HttpStatus.BAD_REQUEST);
+    }
+
+    const usuario = await this.repository.usuario.findUnique({
+      where: { id: hasAuthTable.usuarioId },
+    });
+
+    const isSenhaIgual = await bcrypt.compare(senha.senha, usuario.senha);
+
+    if (isSenhaIgual) {
+      throw new HttpException('Senha igual a anterior', HttpStatus.BAD_REQUEST);
+    }
+
+    const senhaHash = await bcrypt.hash(senha.senha, 10);
+
+    await this.repository.usuario.update({
+      where: { id: usuario.id },
+      data: { senha: senhaHash },
+    });
+
+    await this.repository.authTable.update({
+      where: { usuarioId: usuario.id },
+      data: { recuperaSenhaToken: null },
+    });
+
+    return {
+      message: 'Senha atualizada com sucesso',
+    };
   }
 }
 

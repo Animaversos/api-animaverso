@@ -1,10 +1,16 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { Public } from '../../decorators/public.decorator';
 import { LoginReturnDto } from '../dto/login-return.dto';
 import { LoginDto } from '../dto/login.dto';
 import { AuthService } from '../service/auth.service';
-import * as crypto from 'crypto';
 import { EmailService } from '../../email/email.service';
 
 @Controller('auth')
@@ -40,9 +46,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('recuperar-senha')
-  async recuperarSenha() {
-    const token = crypto.randomBytes(10).toString('hex');
-    await this.emailService.sendEmail();
-    console.log(process.env.RESEND_API_KEY);
+  async recuperarSenha(@Body() email: { email: string }) {
+    return await this.authService.recuperarSenha(email);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('/atualiza-senha-esquecida/:token')
+  async atualizarSenhaEsquecida(
+    @Param('token') token: string,
+    @Body() senha: { senha: string },
+  ) {
+    return await this.authService.atualizSenhaEsquecida(senha, token);
   }
 }
