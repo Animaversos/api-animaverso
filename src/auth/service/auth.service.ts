@@ -151,7 +151,10 @@ export class AuthService {
       });
     }
     console.log(tokenRecuperarSenha);
-    // await this.emailService.sendEmail(); TODO - DEVE ENVIAR O EMAIL COM O TOKEN PARA O USUARIO
+    await this.emailService.sendEmailRedefinirSenha(
+      tokenRecuperarSenha,
+      usuario.email,
+    ); // TODO - DEVE ENVIAR O EMAIL COM O TOKEN PARA O USUARIO
 
     return {
       message: 'Foi enviado um email com instruções para resetar sua senha',

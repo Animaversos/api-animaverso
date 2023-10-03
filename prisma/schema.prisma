@@ -15,6 +15,7 @@ model Usuario {
   email     String     @unique
   cpf       String     @unique
   authTable AuthTable?
+  endereco  Endereco?
 
   @@map("usuario")
 }
@@ -27,4 +28,19 @@ model AuthTable {
   usuario            Usuario @relation(fields: [usuarioId], references: [id])
 
   @@map("auth_table")
+}
+
+model Endereco {
+  id          Int     @id @default(autoincrement())
+  usuarioId   Int     @unique
+  cep         String
+  logradouro  String
+  numero      String
+  bairro      String
+  complemento String?
+  localidade  String
+  uf          String
+  usuario     Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@map("usuario_endereco")
 }
