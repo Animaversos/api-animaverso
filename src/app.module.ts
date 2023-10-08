@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { PrismaService } from './prisma/prisma.service';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { EmailService } from './email/email.service';
+import { EnderecosModule } from './enderecos/enderecos.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { EmailService } from './email/email.service';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    EnderecosModule,
   ],
   controllers: [AppController],
   providers: [

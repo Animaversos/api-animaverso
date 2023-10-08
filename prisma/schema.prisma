@@ -44,3 +44,23 @@ model Endereco {
 
   @@map("usuario_endereco")
 }
+
+model Estados {
+  id      Int       @id @default(autoincrement())
+  id_ibge Int       @unique
+  nome    String
+  uf      String
+  cidades Cidades[]
+
+  @@map("estados")
+}
+
+model Cidades {
+  id             Int     @id @default(autoincrement())
+  id_ibge        Int     @unique
+  nome           String
+  id_ibge_estado Int
+  estado         Estados @relation(fields: [id_ibge_estado], references: [id_ibge])
+
+  @@map("cidades")
+}
