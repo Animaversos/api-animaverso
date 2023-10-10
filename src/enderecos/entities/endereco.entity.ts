@@ -1,1 +1,3 @@
-export class Endereco {}
+export class Endereco {
+  id_usuario: number;
+}

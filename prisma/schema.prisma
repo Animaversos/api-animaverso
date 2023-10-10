@@ -32,35 +32,40 @@ model AuthTable {
 
 model Endereco {
   id          Int     @id @default(autoincrement())
-  usuarioId   Int     @unique
-  cep         String
+  usuarioId   Int     @unique @map("id_usuario")
   logradouro  String
   numero      String
   bairro      String
   complemento String?
-  localidade  String
-  uf          String
-  usuario     Usuario @relation(fields: [usuarioId], references: [id])
+  cidadeId    Int     @map("id_cidade")
+  estadoId    Int     @map("id_estado")
+
+  cidades Cidades @relation(fields: [cidadeId], references: [id])
+  estado  Estados @relation(fields: [estadoId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
 
   @@map("usuario_endereco")
 }
 
 model Estados {
-  id      Int       @id @default(autoincrement())
-  id_ibge Int       @unique
-  nome    String
-  uf      String
-  cidades Cidades[]
+  id       Int        @id @default(autoincrement())
+  id_ibge  Int        @unique
+  nome     String
+  uf       String
+  cidades  Cidades[]
+  endereco Endereco[]
 
   @@map("estados")
 }
 
 model Cidades {
-  id             Int     @id @default(autoincrement())
-  id_ibge        Int     @unique
+  id             Int        @id @default(autoincrement())
+  id_ibge        Int        @unique
   nome           String
   id_ibge_estado Int
-  estado         Estados @relation(fields: [id_ibge_estado], references: [id_ibge])
+  endereco       Endereco[]
+
+  estado Estados @relation(fields: [id_ibge_estado], references: [id_ibge])
 
   @@map("cidades")
 }

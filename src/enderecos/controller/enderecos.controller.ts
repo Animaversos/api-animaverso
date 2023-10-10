@@ -1,27 +1,25 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { EnderecosService } from '../service/enderecos.service';
-
-type Estados = {
-  id_ibge: number;
-  nome: string;
-  uf: string;
-};
-
-type Cidades = {
-  id_ibge: number;
-  nome: string;
-  id_ibge_estado: number;
-};
+import { Estados } from '../types';
+import { CreateEnderecoDto } from '../dto/create-endereco.dto';
+import { Public } from '../../decorators/public.decorator';
 
 @Controller('enderecos')
 export class EnderecosController {
   constructor(private readonly enderecosService: EnderecosService) {}
 
+  @Post('usuario')
+  async createEnderecoUsuario(@Body() body: CreateEnderecoDto) {
+    return await this.enderecosService.createEnderecoUsuario(body);
+  }
+
+  @Public()
   @Post('estados')
   createEstados(@Body() createEstados: Estados[]) {
     return this.enderecosService.createEstados(createEstados);
   }
 
+  @Public()
   @Post('cidades/:id_ibge_estado')
   async createCidades(@Param('id_ibge_estado') id_ibge_estado: number) {
     return this.enderecosService.createCidades(id_ibge_estado);

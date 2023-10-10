@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { UpdateEnderecoDto } from '../dto/update-endereco.dto';
+import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import axios from 'axios';
+import { CreateEnderecoDto } from '../dto/create-endereco.dto';
 
 type Estados = {
   id_ibge: number;
@@ -62,11 +62,39 @@ export class EnderecosService {
     });
   }
 
-  update(id: number, updateEnderecoDto: UpdateEnderecoDto) {
-    return `This action updates a #${id} endereco`;
-  }
+  async createEnderecoUsuario(body: CreateEnderecoDto) {
+    const usuario = await this.repository.usuario.findUnique({
+      where: {
+        id: body.id_usuario,
+      },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} endereco`;
+    if (!usuario) {
+      throw new HttpException('Usuário não encontrado', 404);
+    }
+
+    return this.repository.endereco.create({
+      data: {
+        usuario: {
+          connect: {
+            id: body.id_usuario,
+          },
+        },
+        logradouro: body.logradouro,
+        numero: body.numero,
+        complemento: body.complemento,
+        bairro: body.bairro,
+        cidades: {
+          connect: {
+            id: +body.id_cidade,
+          },
+        },
+        estado: {
+          connect: {
+            id: +body.id_estado,
+          },
+        },
+      },
+    });
   }
 }
