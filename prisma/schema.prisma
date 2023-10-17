@@ -15,6 +15,7 @@ model Usuario {
   email     String     @unique
   cpf       String     @unique
   authTable AuthTable?
+  pets      Pets?
   endereco  Endereco?
 
   @@map("usuario")
@@ -22,9 +23,9 @@ model Usuario {
 
 model AuthTable {
   id                 Int     @id @default(autoincrement())
-  refreshToken       String?
-  recuperaSenhaToken String?
-  usuarioId          Int     @unique
+  usuarioId          Int     @unique @map("id_usuario")
+  recuperaSenhaToken String? @map("recupera_senha_token")
+  refreshToken       String? @map("refresh_token")
   usuario            Usuario @relation(fields: [usuarioId], references: [id])
 
   @@map("auth_table")
@@ -32,26 +33,25 @@ model AuthTable {
 
 model Endereco {
   id          Int     @id @default(autoincrement())
-  usuarioId   Int     @unique @map("id_usuario")
   logradouro  String
   numero      String
   bairro      String
   complemento String?
   cidadeId    Int     @map("id_cidade")
   estadoId    Int     @map("id_estado")
-
-  cidades Cidades @relation(fields: [cidadeId], references: [id])
-  estado  Estados @relation(fields: [estadoId], references: [id])
-  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId   Int     @unique @map("id_usuario")
+  cidades     Cidades @relation(fields: [cidadeId], references: [id])
+  estado      Estados @relation(fields: [estadoId], references: [id])
+  usuario     Usuario @relation(fields: [usuarioId], references: [id])
 
   @@map("usuario_endereco")
 }
 
 model Estados {
   id       Int        @id @default(autoincrement())
-  id_ibge  Int        @unique
   nome     String
   uf       String
+  id_ibge  Int        @unique
   cidades  Cidades[]
   endereco Endereco[]
 
@@ -60,12 +60,50 @@ model Estados {
 
 model Cidades {
   id             Int        @id @default(autoincrement())
-  id_ibge        Int        @unique
   nome           String
+  id_ibge        Int        @unique
   id_ibge_estado Int
+  estado         Estados    @relation(fields: [id_ibge_estado], references: [id_ibge])
   endereco       Endereco[]
 
-  estado Estados @relation(fields: [id_ibge_estado], references: [id_ibge])
-
   @@map("cidades")
+}
+
+model Pets {
+  id         Int     @id @default(autoincrement())
+  nome       String
+  especie    Especie
+  idade      Idade
+  peso       Float
+  porte      Porte
+  genero     Genero
+  observacao String?
+  usuarioId  Int     @unique @map("id_usuario")
+  usuario    Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@map("pets")
+}
+
+enum Idade {
+  ZERO_A_SEIS_MESES
+  SEIS_MESES_A_UM_ANO
+  UM_A_DOIS_ANOS
+  DOIS_A_CINCO_ANOS
+}
+
+enum Especie {
+  CACHORRO
+  GATO
+  OUTROS
+}
+
+enum Porte {
+  PEQUENO
+  MEDIO
+  GRANDE
+}
+
+enum Genero {
+  MASCULINO
+  FEMININO
 }

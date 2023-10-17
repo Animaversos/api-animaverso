@@ -7,6 +7,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { EmailService } from './email/email.service';
 import { EnderecosModule } from './enderecos/enderecos.module';
+import { PetsModule } from './pets/pets.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { EnderecosModule } from './enderecos/enderecos.module';
       isGlobal: true,
     }),
     EnderecosModule,
+    PetsModule,
   ],
   providers: [
     PrismaService,
