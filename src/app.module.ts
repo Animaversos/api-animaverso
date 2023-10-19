@@ -8,6 +8,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { EmailService } from './email/email.service';
 import { EnderecosModule } from './enderecos/enderecos.module';
 import { PetsModule } from './pets/pets.module';
+import { SupabaseModule } from './storage/supabase/supabase.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PetsModule } from './pets/pets.module';
     }),
     EnderecosModule,
     PetsModule,
+    SupabaseModule,
   ],
   providers: [
     PrismaService,

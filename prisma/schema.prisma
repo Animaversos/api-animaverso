@@ -15,7 +15,7 @@ model Usuario {
   email     String     @unique
   cpf       String     @unique
   authTable AuthTable?
-  pets      Pets?
+  pets      Pets[]
   endereco  Endereco?
 
   @@map("usuario")
@@ -77,8 +77,8 @@ model Pets {
   peso       Float
   porte      Porte
   genero     Genero
+  usuarioId  Int     @map("id_usuario")
   observacao String?
-  usuarioId  Int     @unique @map("id_usuario")
   usuario    Usuario @relation(fields: [usuarioId], references: [id])
 
   @@map("pets")

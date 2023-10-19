@@ -8,6 +8,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('/api');
+  app.enableCors();
   // app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
   await app.listen(3000);
 }
