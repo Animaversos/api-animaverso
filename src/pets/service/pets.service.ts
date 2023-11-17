@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreatePetDto } from '../dto/create-pet.dto';
-import { UpdatePetDto } from '../dto/update-pet.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Supabase } from '../../storage/supabase/supabase';
+import { CreatePetDto } from '../dto/create-pet.dto';
+import { Filtros } from '../types/filter-pets.types';
 
 @Injectable()
 export class PetsService {
@@ -46,27 +46,81 @@ export class PetsService {
     if (!pet)
       throw new HttpException('Pet não encontrado', HttpStatus.NOT_FOUND);
 
-    return await this.supabase
+    const imageUpload = await this.supabase
       .getClient()
       .storage.from('pets')
       .upload(`${id_pet}/${file.originalname}`, file.buffer, {
         upsert: true,
       });
+
+    await this.repository.pets.update({
+      where: {
+        id: id_pet,
+      },
+      data: {
+        file_original_name: imageUpload.data.path,
+      },
+    });
+
+    return imageUpload;
   }
 
-  findAll() {
-    return `This action returns all pets`;
-  }
+  async findAll(filters: Filtros) {
+    const pets = await this.repository.pets.findMany({
+      take: 1,
+      where: {
+        AND: [
+          filters.cidade
+            ? {
+                usuario: {
+                  endereco: {
+                    cidades: {
+                      id: +filters.cidade,
+                    },
+                  },
+                },
+              }
+            : {},
+          filters.genero ? { genero: filters.genero } : {},
+          filters.porte ? { porte: filters.porte } : {},
+          filters.especie ? { especie: filters.especie } : {},
+        ],
+      },
+      include: {
+        usuario: {
+          select: {
+            nome: true,
+            endereco: {
+              select: {
+                bairro: true,
+                numero: true,
+                complemento: true,
+                logradouro: true,
+                estado: {
+                  select: {
+                    nome: true,
+                  },
+                },
+                cidades: {
+                  select: {
+                    nome: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} pet`;
-  }
-
-  update(id: number, updatePetDto: UpdatePetDto) {
-    return `This action updates a #${id} pet`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} pet`;
+    return pets.map((pet) => {
+      return {
+        ...pet,
+        url_image: this.supabase
+          .getClient()
+          .storage.from('pets')
+          .getPublicUrl(`${pet.file_original_name}`),
+      };
+    });
   }
 }

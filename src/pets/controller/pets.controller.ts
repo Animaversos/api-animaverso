@@ -1,19 +1,18 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
-  Patch,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { PetsService } from '../service/pets.service';
 import { CreatePetDto } from '../dto/create-pet.dto';
-import { UpdatePetDto } from '../dto/update-pet.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Public } from '../../decorators/public.decorator';
+import { Filtros } from '../types/filter-pets.types';
 
 @Controller('pets')
 export class PetsController {
@@ -35,22 +34,8 @@ export class PetsController {
   }
 
   @Get()
-  findAll() {
-    return this.petsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.petsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto) {
-    return this.petsService.update(+id, updatePetDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.petsService.remove(+id);
+  @Public()
+  findAll(@Query() filters: Filtros) {
+    return this.petsService.findAll(filters);
   }
 }
