@@ -17,6 +17,7 @@ import {
   RecuperarSenhaData,
   ReturnMessage,
 } from '../types';
+import { log } from 'console';
 
 @Controller('auth')
 export class AuthController {

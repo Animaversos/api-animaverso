@@ -18,8 +18,10 @@ export class UsuariosService {
     return `This action returns all usuarios`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} usuario`;
+  async findOne(id: number) {
+    return await this.repository.usuario.findUnique({
+      where: { id: id },
+    });
   }
 
   update(id: number, updateUsuarioDto: UpdateUsuarioDto) {

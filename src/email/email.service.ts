@@ -6,8 +6,6 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 @Injectable()
 export class EmailService {
-  constructor() {}
-
   async sendEmailRedefinirSenha(link: string, email: string) {
     await resend.emails.send({
       from: 'contato@animaverso.com.br',

@@ -123,12 +123,15 @@ export class AuthService {
   }
 
   async recuperarSenha(data: RecuperarSenhaData): Promise<ReturnMessage> {
-    const usuario = await this.repository.usuario.findFirst({
+    const usuario = await this.repository.usuario.findUnique({
       where: { email: data.email },
     });
 
     if (!usuario) {
-      throw new HttpException('Usuário não encontrado', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Não foi não encontrado um usuário com este e-mail.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const tokenRecuperarSenha = randomBytes(32).toString('hex');
 
@@ -151,12 +154,9 @@ export class AuthService {
         },
       });
     }
-    console.log(tokenRecuperarSenha);
-    await this.emailService.sendEmailRedefinirSenha(
-      tokenRecuperarSenha,
-      usuario.email,
-    ); // TODO - DEVE ENVIAR O EMAIL COM O TOKEN PARA O USUARIO
+    const link = `http://localhost:5173/authentication/redefinePassword/${tokenRecuperarSenha}`;
 
+    await this.emailService.sendEmailRedefinirSenha(link, usuario.email); // TODO - DEVE ENVIAR O EMAIL COM O TOKEN PARA O USUARIO
     return {
       message: 'Foi enviado um email com instruções para resetar sua senha',
     };
