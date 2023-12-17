@@ -38,7 +38,7 @@ export class AuthController {
   async registrarUsuario(
     @Body() createUsuarioDto: CreateUsuarioDto,
   ): Promise<RegistrarReturnDto> {
-    let usuario = await this.authService.registrar(createUsuarioDto);
+    const usuario = await this.authService.registrar(createUsuarioDto);
 
     return {
       id: usuario.id,

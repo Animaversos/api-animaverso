@@ -71,6 +71,7 @@ export class AuthService {
       const userDto: UserDto = {
         id: user.id,
         usuario: user.usuario,
+        nome: user.nome,
         email: user.email,
       };
 

@@ -1,6 +1,7 @@
 export class UserDto {
   id: number;
   usuario: string;
+  nome: string;
   email: string;
 }
 
