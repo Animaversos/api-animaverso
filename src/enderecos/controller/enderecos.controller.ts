@@ -14,9 +14,9 @@ export class EnderecosController {
   }
 
   @Public()
-  @Post('estados')
-  createEstados(@Body() createEstados: Estados[]) {
-    return this.enderecosService.createEstados(createEstados);
+  @Post('estados-cidades')
+  createEstados() {
+    return this.enderecosService.createEstadosCidades();
   }
 
   @Public()

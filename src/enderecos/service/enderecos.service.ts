@@ -18,10 +18,28 @@ type Cidades = {
 export class EnderecosService {
   constructor(private readonly repository: PrismaService) {}
 
-  async createEstados(createEstados: Estados[]) {
-    return this.repository.estados.createMany({
-      data: createEstados,
+  async createEstadosCidades() {
+    const { data } = await axios.get(
+      `http://servicodados.ibge.gov.br/api/v1/localidades/estados/`,
+    );
+
+    const estados: Estados[] = data.map((estado) => {
+      return {
+        id_ibge: estado.id,
+        nome: estado.nome,
+        uf: estado.sigla,
+      };
     });
+
+    await this.repository.estados.createMany({
+      data: estados,
+    });
+
+    estados.forEach((estados) => {
+      this.createCidades(estados.id_ibge);
+    });
+
+    return { message: 'Estados e cidades importados' };
   }
 
   async createCidades(id_ibge_estado: number) {
