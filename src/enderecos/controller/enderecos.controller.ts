@@ -26,8 +26,8 @@ export class EnderecosController {
   }
 
   @Get('estados')
-  findAllEstados() {
-    return this.enderecosService.findAllEstados();
+  findAllEstados(@Query('nome') nome: string) {
+    return this.enderecosService.findAllEstados(nome);
   }
 
   @Get('cidades/:uf')

@@ -62,8 +62,31 @@ export class EnderecosService {
     return `This action returns all enderecos`;
   }
 
-  findAllEstados() {
-    return this.repository.estados.findMany();
+  async findAllEstados(nomeEstado: string) {
+    const estados = await this.repository.estados.findMany({
+      where: {
+        AND: [
+          nomeEstado
+            ? {
+                nome: {
+                  mode: 'insensitive',
+                  startsWith: nomeEstado,
+                },
+              }
+            : {},
+        ],
+      },
+      orderBy: {
+        nome: 'asc',
+      },
+    });
+
+    return estados.map((estado) => {
+      return {
+        id: estado.id,
+        label: `${estado.uf} - ${estado.nome}`,
+      };
+    });
   }
 
   findAllCidades(uf: string, nome: string) {
