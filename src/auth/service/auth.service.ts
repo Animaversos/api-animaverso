@@ -100,10 +100,9 @@ export class AuthService {
   }
 
   private generateRefreshToken(userId: string) {
-    const payload = { userId: userId, time: new Date().getMilliseconds() };
+    const payload = { sub: userId, time: new Date().getMilliseconds() };
 
     return this.jwtService.sign(payload, {
-      secret: this.configService.get('REFRESH_SECRET_KEY'),
       expiresIn: `${this.configService.get('REFRESH_SECRET_KEY_EXPIRATION')}s`,
     });
   }
@@ -214,5 +213,37 @@ export class AuthService {
     return {
       message: 'Senha atualizada com sucesso',
     };
+  }
+
+  async verificaRefreshToken(refreshToken: string): Promise<string> {
+    try {
+      const payload = await this.jwtService.verify(refreshToken);
+      console.log(payload);
+
+      const user = await this.repository.usuario.findUnique({
+        select: {
+          usuario: true,
+        },
+        where: { id: Number(payload.sub) },
+      });
+
+      if (!user) {
+        throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+      }
+
+      const payloadAccessToken = {
+        sub: payload.sub,
+        username: user.usuario,
+      };
+
+      return await this.jwtService.sign(payloadAccessToken);
+    } catch (error) {
+      if (error.name == 'TokenExpiredError') {
+        throw new HttpException(
+          'Sessão expirada, realize novamente o acesso',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+    }
   }
 }

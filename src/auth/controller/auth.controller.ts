@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -66,5 +67,11 @@ export class AuthController {
     @Body() dto: AtualizarSenhaEsquecidaDto,
   ): Promise<ReturnMessage> {
     return await this.authService.atualizarSenhaEsquecida(dto, token);
+  }
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Get('/verifica-token/:token')
+  async verificaRefreshToken(@Param('token') token: string) {
+    return await this.authService.verificaRefreshToken(token);
   }
 }
