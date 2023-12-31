@@ -218,7 +218,6 @@ export class AuthService {
   async verificaRefreshToken(refreshToken: string): Promise<string> {
     try {
       const payload = await this.jwtService.verify(refreshToken);
-      console.log(payload);
 
       const user = await this.repository.usuario.findUnique({
         select: {
@@ -241,7 +240,7 @@ export class AuthService {
       if (error.name == 'TokenExpiredError') {
         throw new HttpException(
           'Sessão expirada, realize novamente o acesso',
-          HttpStatus.UNAUTHORIZED,
+          HttpStatus.FORBIDDEN,
         );
       }
     }
