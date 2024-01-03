@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { UpdateEmailUsuarioDto } from './dto/update-usuario.dto';
 
 @Injectable()
 export class UsuariosService {
@@ -21,11 +21,18 @@ export class UsuariosService {
     });
   }
 
-  async update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
-    await this.repository.usuario.update({
+  async findNomeEmail(id: number) {
+    return await this.repository.usuario.findUnique({
       where: { id: id },
-      data: updateUsuarioDto,
+      select: { nome: true, email: true },
     });
-    return { message: 'Usuário atualizado com sucesso!' };
+  }
+
+  async updateEmail(id: number, updateEmailUsuarioDto: UpdateEmailUsuarioDto) {
+    const userAtualizado = await this.repository.usuario.update({
+      where: { id: id },
+      data: updateEmailUsuarioDto,
+    });
+    return { email: userAtualizado.email };
   }
 }
