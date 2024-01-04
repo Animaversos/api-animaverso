@@ -85,6 +85,7 @@ export class EnderecosService {
       return {
         id: estado.id,
         label: `${estado.uf} - ${estado.nome}`,
+        uf: estado.uf,
       };
     });
   }
