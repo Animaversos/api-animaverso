@@ -104,6 +104,14 @@ export class EnderecosService {
     });
   }
 
+  async findByUsuarioId(id: number) {
+    return await this.repository.endereco.findUnique({
+      where: {
+        usuarioId: Number(id),
+      },
+    });
+  }
+
   async createEnderecoUsuario(body: CreateEnderecoDto) {
     const usuario = await this.repository.usuario.findUnique({
       where: {
@@ -115,6 +123,16 @@ export class EnderecosService {
       throw new HttpException('Usuário não encontrado', 404);
     }
 
+    const usuarioEndereco = await this.repository.endereco.findUnique({
+      where: {
+        usuarioId: usuario.id,
+      },
+    });
+
+    if (usuarioEndereco) {
+      throw new HttpException('Usuário já possui endereço cadastrado', 400);
+    }
+
     return this.repository.endereco.create({
       data: {
         usuario: {
@@ -122,6 +140,30 @@ export class EnderecosService {
             id: body.id_usuario,
           },
         },
+        logradouro: body.logradouro,
+        numero: body.numero,
+        complemento: body.complemento,
+        bairro: body.bairro,
+        cidades: {
+          connect: {
+            id: +body.id_cidade,
+          },
+        },
+        estado: {
+          connect: {
+            id: +body.id_estado,
+          },
+        },
+      },
+    });
+  }
+
+  async updateEnderecoUsuario(body: any) {
+    return await this.repository.endereco.update({
+      where: {
+        id: body.id,
+      },
+      data: {
         logradouro: body.logradouro,
         numero: body.numero,
         complemento: body.complemento,
