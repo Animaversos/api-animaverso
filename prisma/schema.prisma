@@ -80,6 +80,7 @@ model Pets {
   usuarioId          Int     @map("id_usuario")
   observacao         String?
   file_original_name String?
+  adotado            SimNao  @default(NAO)
   usuario            Usuario @relation(fields: [usuarioId], references: [id])
 
   @@map("pets")
@@ -107,4 +108,9 @@ enum Porte {
 enum Genero {
   MASCULINO
   FEMININO
+}
+
+enum SimNao {
+  SIM
+  NAO
 }
