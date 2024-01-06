@@ -1,10 +1,13 @@
 import {
-  Body,
   Controller,
   Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
+  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -19,18 +22,23 @@ export class PetsController {
   constructor(private readonly petsService: PetsService) {}
 
   @Post()
-  create(@Body() createPetDto: CreatePetDto) {
-    return this.petsService.create(createPetDto);
-  }
-
-  @Public()
-  @Post('upload/:id_pet')
   @UseInterceptors(FileInterceptor('file'))
+  @HttpCode(HttpStatus.CREATED)
   async uploadImagesPets(
-    @Param('id_pet') id_pet: number,
     @UploadedFile() file: Express.Multer.File,
+    @Req() request: any,
   ) {
-    return await this.petsService.uploadImagesPets(+id_pet, file);
+    try {
+      const petInfo = JSON.parse(request.body.petInfo) as CreatePetDto;
+      const petCadastrado = await this.petsService.create(petInfo);
+      await this.petsService.uploadImagesPets(petCadastrado.id, file);
+
+      return {
+        mensagem: 'Pet cadastrado com sucesso',
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Get()
