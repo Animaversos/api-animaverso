@@ -51,4 +51,9 @@ export class PetsController {
   findAllPetsByUser(@Param('id_usuario') id_usuario: number) {
     return this.petsService.findAllPetsByUser(+id_usuario);
   }
+
+  @Get('usuario/:id_usuario/:id_pet')
+  findOne(@Param('id_usuario') id: string, @Param('id_pet') id_pet: string) {
+    return this.petsService.findOne(+id, +id_pet);
+  }
 }

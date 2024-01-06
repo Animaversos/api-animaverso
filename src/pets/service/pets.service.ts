@@ -131,4 +131,12 @@ export class PetsService {
       },
     });
   }
+  async findOne(id: number, id_pet: number) {
+    return await this.repository.pets.findUnique({
+      where: {
+        usuarioId: id,
+        id: id_pet,
+      },
+    });
+  }
 }
