@@ -132,11 +132,19 @@ export class PetsService {
     });
   }
   async findOne(id: number, id_pet: number) {
-    return await this.repository.pets.findUnique({
+    const pet = await this.repository.pets.findUnique({
       where: {
         usuarioId: id,
         id: id_pet,
       },
     });
+    const { data } = this.supabase
+      .getClient()
+      .storage.from('pets')
+      .getPublicUrl(`${pet.file_original_name}`);
+
+    pet['url_image'] = data.publicUrl;
+
+    return pet;
   }
 }
