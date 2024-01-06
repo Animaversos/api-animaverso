@@ -38,4 +38,9 @@ export class PetsController {
   findAll(@Query() filters: Filtros) {
     return this.petsService.findAll(filters);
   }
+
+  @Get('/usuario/:id_usuario')
+  findAllPetsByUser(@Param('id_usuario') id_usuario: number) {
+    return this.petsService.findAllPetsByUser(+id_usuario);
+  }
 }

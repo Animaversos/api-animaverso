@@ -123,4 +123,12 @@ export class PetsService {
       };
     });
   }
+
+  async findAllPetsByUser(id_usuario: number) {
+    return await this.repository.pets.findMany({
+      where: {
+        usuarioId: id_usuario,
+      },
+    });
+  }
 }

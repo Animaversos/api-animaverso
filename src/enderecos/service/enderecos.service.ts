@@ -105,11 +105,32 @@ export class EnderecosService {
   }
 
   async findByUsuarioId(id: number) {
-    return await this.repository.endereco.findUnique({
+    const endereco = await this.repository.endereco.findUnique({
       where: {
         usuarioId: Number(id),
       },
+      include: {
+        estado: true,
+        cidades: true,
+      },
     });
+
+    return {
+      id: endereco.id,
+      logradouro: endereco.logradouro,
+      numero: endereco.numero,
+      complemento: endereco.complemento,
+      bairro: endereco.bairro,
+      cidade: {
+        id: endereco.cidades.id,
+        label: endereco.cidades.nome,
+      },
+      estado: {
+        id: endereco.estado.id,
+        label: `${endereco.estado.uf} - ${endereco.estado.nome}`,
+        uf: endereco.estado.uf,
+      },
+    };
   }
 
   async createEnderecoUsuario(body: CreateEnderecoDto) {
