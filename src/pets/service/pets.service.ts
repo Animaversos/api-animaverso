@@ -30,6 +30,40 @@ export class PetsService {
     });
   }
 
+  async update(id: number, dto: CreatePetDto) {
+    return this.repository.pets.update({
+      where: {
+        id: id,
+      },
+      data: dto,
+    });
+  }
+
+  async removeImage(id_pet: number) {
+    const pet = await this.repository.pets.findUnique({
+      where: {
+        id: id_pet,
+      },
+    });
+
+    if (!pet)
+      throw new HttpException('Pet não encontrado', HttpStatus.NOT_FOUND);
+
+    await this.supabase
+      .getClient()
+      .storage.from('pets')
+      .remove([`${pet.id}/${pet.file_original_name}`]);
+
+    return await this.repository.pets.update({
+      where: {
+        id: id_pet,
+      },
+      data: {
+        file_original_name: null,
+      },
+    });
+  }
+
   async uploadImagesPets(id_pet: number, file: Express.Multer.File) {
     if (!file)
       throw new HttpException(
@@ -146,5 +180,13 @@ export class PetsService {
     pet['url_image'] = data.publicUrl;
 
     return pet;
+  }
+  async remove(id: number) {
+    await this.removeImage(id);
+    return await this.repository.pets.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 }

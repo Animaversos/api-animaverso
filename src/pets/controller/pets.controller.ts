@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpException,
@@ -40,6 +41,29 @@ export class PetsController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+  @Post(':id')
+  @UseInterceptors(FileInterceptor('file'))
+  @HttpCode(HttpStatus.CREATED)
+  async updatePet(
+    @Param('id') id: number,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() request: any,
+  ) {
+    try {
+      const petInfo = JSON.parse(request.body.petInfo) as CreatePetDto;
+      const petCadastrado = await this.petsService.update(+id, petInfo);
+      if (file) {
+        await this.petsService.removeImage(+id);
+        await this.petsService.uploadImagesPets(petCadastrado.id, file);
+      }
+
+      return {
+        mensagem: 'Pet atualizado com sucesso',
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 
   @Get()
   @Public()
@@ -55,5 +79,10 @@ export class PetsController {
   @Get('usuario/:id_usuario/:id_pet')
   findOne(@Param('id_usuario') id: string, @Param('id_pet') id_pet: string) {
     return this.petsService.findOne(+id, +id_pet);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return await this.petsService.remove(+id);
   }
 }
