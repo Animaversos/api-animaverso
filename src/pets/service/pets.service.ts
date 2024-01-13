@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { Supabase } from '../../storage/supabase/supabase';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { Filtros } from '../types/filter-pets.types';
+import { SimNao } from '@prisma/client';
 
 @Injectable()
 export class PetsService {
@@ -181,11 +182,23 @@ export class PetsService {
 
     return pet;
   }
+
   async remove(id: number) {
     await this.removeImage(id);
     return await this.repository.pets.delete({
       where: {
         id: id,
+      },
+    });
+  }
+
+  async adotou(id: number) {
+    return await this.repository.pets.update({
+      where: {
+        id: id,
+      },
+      data: {
+        adotado: SimNao.SIM,
       },
     });
   }

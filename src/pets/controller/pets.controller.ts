@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -84,5 +85,10 @@ export class PetsController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.petsService.remove(+id);
+  }
+
+  @Patch('adotou/:id')
+  async adotou(@Param('id') id: string) {
+    return await this.petsService.adotou(+id);
   }
 }

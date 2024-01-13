@@ -77,15 +77,46 @@ export class InteressadosService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} interessado`;
+  async findAllInteressesByIdUsuario(idUsuario: number) {
+    return await this.repository.interessados.findMany({
+      where: {
+        id_usuario: idUsuario,
+      },
+      include: {
+        pet: {
+          select: {
+            nome: true,
+            adotado: true,
+            especie: true,
+            usuario: {
+              select: {
+                endereco: {
+                  select: {
+                    cidades: {
+                      select: {
+                        nome: true,
+                      },
+                    },
+                    estado: {
+                      select: {
+                        uf: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
-  update(id: number, updateInteressadoDto: UpdateInteressadoDto) {
-    return `This action updates a #${id} interessado`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} interessado`;
+  async remove(id: number) {
+    return await this.repository.interessados.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 }
