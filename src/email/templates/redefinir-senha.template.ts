@@ -1,5 +1,4 @@
 export const RedefinirSenhaTemplate = (link: string) => {
-  // TODO - Informar a logo da Animaverso no header
   return `
     <!DOCTYPE html>
 <html lang='en'>
@@ -30,7 +29,7 @@ export const RedefinirSenhaTemplate = (link: string) => {
 </head>
 <body>
   <div class='header'>
-    <img src='caminho_para_a_logo.png' alt='Logo do Sistema'> 
+    <img src='https://qencdxllvvjlbwzowlmk.supabase.co/storage/v1/object/public/pets/logo-com-nome.png' alt='Logo do Sistema'> 
   </div>
 
   <p>Prezado(a) Usuário(a),</p>
