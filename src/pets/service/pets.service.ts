@@ -151,6 +151,7 @@ export class PetsService {
                 estado: {
                   select: {
                     nome: true,
+                    uf: true,
                   },
                 },
                 cidades: {

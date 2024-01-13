@@ -27,6 +27,19 @@ export class InteressadosService {
       throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
     }
 
+    const existsInteresse = await this.repository.interessados.count({
+      where: {
+        id_pet: createInteressadoDto.id_pet,
+        id_usuario: createInteressadoDto.id_usuario,
+      },
+    });
+
+    if (existsInteresse) {
+      throw new HttpException(
+        'Interesse já registrado',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.repository.interessados.create({
       data: {
         id_pet: createInteressadoDto.id_pet,
