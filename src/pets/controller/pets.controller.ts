@@ -17,7 +17,6 @@ import { PetsService } from '../service/pets.service';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Public } from '../../decorators/public.decorator';
-import { Filtros } from '../types/filter-pets.types';
 
 @Controller('pets')
 export class PetsController {
