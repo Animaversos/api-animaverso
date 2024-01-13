@@ -68,7 +68,16 @@ export class PetsController {
 
   @Get()
   @Public()
-  findAll(@Query() filters: Filtros) {
+  findAll(@Query() filters: any) {
+    if (filters.especie) {
+      filters.especie = filters.especie.split(',');
+    }
+    if (filters.porte) {
+      filters.porte = filters.porte.split(',');
+    }
+    if (filters.genero) {
+      filters.genero = filters.genero.split(',');
+    }
     return this.petsService.findAll(filters);
   }
 

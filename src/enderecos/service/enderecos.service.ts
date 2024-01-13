@@ -104,6 +104,35 @@ export class EnderecosService {
     });
   }
 
+  async findAllCidadesByNome(filter: any) {
+    const cidades = await this.repository.cidades.findMany({
+      where: {
+        nome: {
+          mode: 'insensitive',
+          startsWith: filter.nome,
+        },
+      },
+      include: {
+        estado: true,
+      },
+      orderBy: [
+        {
+          estado: {
+            uf: 'asc',
+          },
+        },
+        { nome: 'asc' },
+      ],
+    });
+
+    return cidades.map((cidade) => {
+      return {
+        id: cidade.id,
+        label: `${cidade.estado.uf} - ${cidade.nome}`,
+      };
+    });
+  }
+
   async findByUsuarioId(id: number) {
     const endereco = await this.repository.endereco.findUnique({
       where: {

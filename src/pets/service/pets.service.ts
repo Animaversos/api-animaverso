@@ -102,7 +102,6 @@ export class PetsService {
 
   async findAll(filters: Filtros) {
     const pets = await this.repository.pets.findMany({
-      take: 1,
       where: {
         AND: [
           filters.cidade
@@ -116,9 +115,27 @@ export class PetsService {
                 },
               }
             : {},
-          filters.genero ? { genero: filters.genero } : {},
-          filters.porte ? { porte: filters.porte } : {},
-          filters.especie ? { especie: filters.especie } : {},
+          filters.genero
+            ? {
+                genero: {
+                  in: filters.genero,
+                },
+              }
+            : {},
+          filters.porte
+            ? {
+                porte: {
+                  in: filters.porte,
+                },
+              }
+            : {},
+          filters.especie
+            ? {
+                especie: {
+                  in: filters.especie,
+                },
+              }
+            : {},
         ],
       },
       include: {

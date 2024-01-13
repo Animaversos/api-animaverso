@@ -49,4 +49,9 @@ export class EnderecosController {
   findAllCidades(@Param('uf') uf: string, @Query('nome') nome: string) {
     return this.enderecosService.findAllCidades(uf, nome);
   }
+
+  @Get('cidades')
+  async findAllCidadesByNome(@Query() filter: any) {
+    return await this.enderecosService.findAllCidadesByNome(filter);
+  }
 }
