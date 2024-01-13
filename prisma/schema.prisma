@@ -17,6 +17,7 @@ model Usuario {
   authTable AuthTable?
   pets      Pets[]
   endereco  Endereco?
+  interessados Interessados[]
 
   @@map("usuario")
 }
@@ -82,8 +83,21 @@ model Pets {
   file_original_name String?
   adotado            SimNao  @default(NAO)
   usuario            Usuario @relation(fields: [usuarioId], references: [id])
-
+  interessados       Interessados[]
+  
   @@map("pets")
+}
+
+model Interessados {
+  id       Int     @id @default(autoincrement())
+  id_pet   Int     @map("id_pet")
+  id_usuario_interessado Int   @map("id_usuario")
+  id_usuario_dono Int   @map("id_usuario_dono")
+
+  pet      Pets    @relation(fields: [id_pet], references: [id])
+  usuario  Usuario @relation(fields: [id_usuario_interessado], references: [id])
+
+  @@map("interessados")
 }
 
 enum Idade {

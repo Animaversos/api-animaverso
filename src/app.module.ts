@@ -9,6 +9,7 @@ import { EmailService } from './email/email.service';
 import { EnderecosModule } from './enderecos/enderecos.module';
 import { PetsModule } from './pets/pets.module';
 import { SupabaseModule } from './storage/supabase/supabase.module';
+import { InteressadosModule } from './interessados/interessados.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SupabaseModule } from './storage/supabase/supabase.module';
     EnderecosModule,
     PetsModule,
     SupabaseModule,
+    InteressadosModule,
   ],
   providers: [
     PrismaService,
