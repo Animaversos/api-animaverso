@@ -5,4 +5,5 @@ export type Filtros = {
   genero?: Genero[];
   porte?: Porte[];
   especie?: Especie[];
+  pageNumber?: number;
 };

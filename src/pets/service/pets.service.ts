@@ -101,7 +101,11 @@ export class PetsService {
   }
 
   async findAll(filters: Filtros) {
+    const skip = ((filters.pageNumber || 1) - 1) * 10;
     const pets = await this.repository.pets.findMany({
+      skip: skip,
+      take: 10,
+
       where: {
         AND: [
           filters.cidade
