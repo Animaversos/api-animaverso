@@ -108,6 +108,7 @@ export class PetsService {
       take: 10,
 
       where: {
+        adotado: SimNao.NAO,
         AND: [
           filters.cidade
             ? {
