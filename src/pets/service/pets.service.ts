@@ -4,12 +4,16 @@ import { Supabase } from '../../storage/supabase/supabase';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { Filtros } from '../types/filter-pets.types';
 import { SimNao } from '@prisma/client';
+import { EmailService } from 'src/email/email.service';
+import { CupomService } from 'src/cupom/cupom.service';
 
 @Injectable()
 export class PetsService {
   constructor(
     private readonly repository: PrismaService,
     private readonly supabase: Supabase,
+    private readonly emailService: EmailService,
+    private readonly cupomService: CupomService,
   ) {}
 
   create(createPetDto: CreatePetDto) {
@@ -216,14 +220,37 @@ export class PetsService {
     });
   }
 
-  async adotou(id: number) {
-    return await this.repository.pets.update({
+  async adotou(idPet: number, idUsuario: number, id: number) {
+    const usuario = await this.repository.usuario.findUnique({
       where: {
-        id: id,
+        id: idUsuario,
+      },
+    });
+
+    const pet = await this.repository.pets.update({
+      where: {
+        id: idPet,
       },
       data: {
         adotado: SimNao.SIM,
       },
     });
+
+    await this.repository.interessados.update({
+      where: {
+        id: id,
+      },
+      data: {
+        adotou: 'SIM',
+      },
+    });
+
+    const cupom = await this.cupomService.create(pet.id);
+
+    await this.emailService.sendEmailPetDoado(
+      usuario.email,
+      pet.nome,
+      cupom.codigo,
+    );
   }
 }

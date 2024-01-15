@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -6,7 +7,6 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  Patch,
   Post,
   Query,
   Req,
@@ -17,6 +17,7 @@ import { PetsService } from '../service/pets.service';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Public } from '../../decorators/public.decorator';
+import { Adotou } from '../entities/adotou';
 
 @Controller('pets')
 export class PetsController {
@@ -95,8 +96,8 @@ export class PetsController {
     return await this.petsService.remove(+id);
   }
 
-  @Patch('adotou/:id')
-  async adotou(@Param('id') id: string) {
-    return await this.petsService.adotou(+id);
+  @Post('adotou/:id')
+  adotou(@Param('id') id: number, @Body() dto: Adotou) {
+    return this.petsService.adotou(dto.id_pet, dto.id_usuario, +id);
   }
 }

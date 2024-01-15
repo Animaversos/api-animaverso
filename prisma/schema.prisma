@@ -93,6 +93,7 @@ model Interessados {
   id         Int     @id @default(autoincrement())
   id_pet     Int     @map("id_pet")
   id_usuario Int     @map("id_usuario")
+  adotou     SimNao  @default(NAO)
   pet        Pets    @relation(fields: [id_pet], references: [id])
   usuario    Usuario @relation(fields: [id_usuario], references: [id])
 
