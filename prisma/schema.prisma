@@ -8,16 +8,16 @@ datasource db {
 }
 
 model Usuario {
-  id        Int        @id @default(autoincrement())
-  nome      String
-  usuario   String     @unique
-  senha     String
-  email     String     @unique
-  cpf       String     @unique
-  authTable AuthTable?
-  pets      Pets[]
-  endereco  Endereco?
+  id           Int            @id @default(autoincrement())
+  nome         String
+  usuario      String         @unique
+  senha        String
+  email        String         @unique
+  cpf          String         @unique
+  authTable    AuthTable?
   interessados Interessados[]
+  pets         Pets[]
+  endereco     Endereco?
 
   @@map("usuario")
 }
@@ -71,33 +71,42 @@ model Cidades {
 }
 
 model Pets {
-  id                 Int     @id @default(autoincrement())
+  id                 Int            @id @default(autoincrement())
   nome               String
   especie            Especie
   idade              Idade
   peso               Float
   porte              Porte
   genero             Genero
-  usuarioId          Int     @map("id_usuario")
+  usuarioId          Int            @map("id_usuario")
   observacao         String?
   file_original_name String?
-  adotado            SimNao  @default(NAO)
-  usuario            Usuario @relation(fields: [usuarioId], references: [id])
+  adotado            SimNao         @default(NAO)
+  cupom              Cupom?
   interessados       Interessados[]
-  
+  usuario            Usuario        @relation(fields: [usuarioId], references: [id])
+
   @@map("pets")
 }
 
 model Interessados {
-  id       Int     @id @default(autoincrement())
-  id_pet   Int     @map("id_pet")
-  id_usuario_interessado Int   @map("id_usuario")
-  id_usuario_dono Int   @map("id_usuario_dono")
-
-  pet      Pets    @relation(fields: [id_pet], references: [id])
-  usuario  Usuario @relation(fields: [id_usuario_interessado], references: [id])
+  id         Int     @id @default(autoincrement())
+  id_pet     Int     @map("id_pet")
+  id_usuario Int     @map("id_usuario")
+  pet        Pets    @relation(fields: [id_pet], references: [id])
+  usuario    Usuario @relation(fields: [id_usuario], references: [id])
 
   @@map("interessados")
+}
+
+model Cupom {
+  id     Int    @id @default(autoincrement())
+  codigo String @unique
+  petId  Int    @unique @map("id_pet")
+  usado  SimNao @default(NAO)
+  pet    Pets   @relation(fields: [petId], references: [id])
+
+  @@map("cupom")
 }
 
 enum Idade {

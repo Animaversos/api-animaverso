@@ -10,6 +10,7 @@ import { EnderecosModule } from './enderecos/enderecos.module';
 import { PetsModule } from './pets/pets.module';
 import { SupabaseModule } from './storage/supabase/supabase.module';
 import { InteressadosModule } from './interessados/interessados.module';
+import { CupomModule } from './cupom/cupom.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { InteressadosModule } from './interessados/interessados.module';
     PetsModule,
     SupabaseModule,
     InteressadosModule,
+    CupomModule,
   ],
   providers: [
     PrismaService,
