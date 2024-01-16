@@ -7,7 +7,6 @@ COPY ./.env.production ./.env
 
 RUN npm install
 
-RUN npm prisma generate
 
 RUN npm run build
 
