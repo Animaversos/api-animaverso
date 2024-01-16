@@ -1,21 +1,22 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpCode } from '@nestjs/common';
 import { CupomService } from '../cupom.service';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('cupom')
 export class CupomController {
   constructor(private readonly cupomService: CupomService) {}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cupomService.findOne(+id);
+  @Get(':cupom')
+  @Public()
+  findOne(@Param('cupom') cupom: string) {
+    return this.cupomService.findByCupom(cupom);
+  }
+
+  @Post(':cupom')
+  @Public()
+  @HttpCode(200)
+  confirmarCupom(@Param('cupom') cupom: string) {
+    return this.cupomService.confirmaCupom(cupom);
   }
 
   @Post()

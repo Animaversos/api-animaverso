@@ -1,10 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SimNao } from '@prisma/client';
+import { Supabase } from 'src/storage/supabase/supabase';
 
 @Injectable()
 export class CupomService {
-  constructor(private repository: PrismaService) {}
+  constructor(
+    private repository: PrismaService,
+    private readonly supabase: Supabase,
+  ) {}
 
   async create(petId: number) {
     const pet = await this.repository.pets.findUnique({
@@ -29,8 +33,79 @@ export class CupomService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cupom`;
+  async confirmaCupom(cupom: string) {
+    const data = await this.repository.cupom.findUnique({
+      where: {
+        codigo: cupom.toUpperCase().replace(/\s/g, '').trim(),
+      },
+    });
+
+    if (!data) {
+      throw new HttpException('Cupom não encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    if (data.usado === SimNao.SIM) {
+      throw new HttpException('Cupom já utilizado', HttpStatus.BAD_REQUEST);
+    }
+
+    await this.repository.cupom.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        usado: SimNao.SIM,
+      },
+    });
+
+    return {
+      message: 'Cupom confirmado',
+    };
+  }
+
+  async findByCupom(cupom: string) {
+    const data = await this.repository.cupom.findUnique({
+      where: {
+        codigo: cupom.toUpperCase().replace(/\s/g, '').trim(),
+      },
+      include: {
+        pet: {
+          select: {
+            nome: true,
+            file_original_name: true,
+            interessados: {
+              select: {
+                usuario: {
+                  select: {
+                    nome: true,
+                    email: true,
+                    cpf: true,
+                  },
+                },
+              },
+              where: {
+                adotou: SimNao.SIM,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!data) {
+      throw new HttpException('Cupom não encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    if (data.usado === SimNao.SIM) {
+      throw new HttpException('Cupom já utilizado', HttpStatus.BAD_REQUEST);
+    }
+
+    return {
+      ...data,
+      image: this.supabase
+        .getClient()
+        .storage.from('pets')
+        .getPublicUrl(`${data.pet.file_original_name}`),
+    };
   }
 
   obterDataFormatada() {
