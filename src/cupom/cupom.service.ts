@@ -24,7 +24,7 @@ export class CupomService {
     return await this.repository.cupom.create({
       data: {
         petId: petId,
-        usado: SimNao.NAO,
+        usado: 'NAO',
         codigo: (pet.nome + pet.id + this.obterDataFormatada())
           .toUpperCase()
           .replace(/\s/g, '')
@@ -44,7 +44,7 @@ export class CupomService {
       throw new HttpException('Cupom não encontrado', HttpStatus.NOT_FOUND);
     }
 
-    if (data.usado === SimNao.SIM) {
+    if (data.usado === 'SIM') {
       throw new HttpException('Cupom já utilizado', HttpStatus.BAD_REQUEST);
     }
 
@@ -53,7 +53,7 @@ export class CupomService {
         id: data.id,
       },
       data: {
-        usado: SimNao.SIM,
+        usado: 'SIM',
       },
     });
 
@@ -83,7 +83,7 @@ export class CupomService {
                 },
               },
               where: {
-                adotou: SimNao.SIM,
+                adotou: 'SIM',
               },
             },
           },
@@ -95,7 +95,7 @@ export class CupomService {
       throw new HttpException('Cupom não encontrado', HttpStatus.NOT_FOUND);
     }
 
-    if (data.usado === SimNao.SIM) {
+    if (data.usado === 'SIM') {
       throw new HttpException('Cupom já utilizado', HttpStatus.BAD_REQUEST);
     }
 
