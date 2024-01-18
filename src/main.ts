@@ -10,12 +10,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('/api');
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://www.animaverso.com.br',
-      'https://api.animaverso.com.br',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    origin: ['https://www.animaverso.com.br', 'https://api.animaverso.com.br'],
+    allowedHeaders:
+      'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
+    methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
     credentials: true,
   });
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
