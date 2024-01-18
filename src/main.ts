@@ -15,9 +15,6 @@ async function bootstrap() {
       if (whitelist.indexOf(origin) !== -1) {
         console.log('allowed cors for:', origin);
         callback(null, true);
-      } else {
-        console.log('blocked cors for:', origin);
-        callback(new Error('Not allowed by CORS'));
       }
     },
     allowedHeaders:
