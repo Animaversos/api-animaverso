@@ -144,6 +144,10 @@ export class EnderecosService {
       },
     });
 
+    if (!endereco) {
+      return {};
+    }
+
     return {
       id: endereco.id,
       logradouro: endereco.logradouro,

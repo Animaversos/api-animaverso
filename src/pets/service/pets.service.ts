@@ -15,7 +15,20 @@ export class PetsService {
     private readonly cupomService: CupomService,
   ) {}
 
-  create(createPetDto: CreatePetDto) {
+  async create(createPetDto: CreatePetDto) {
+    const endereco = await this.repository.endereco.findUnique({
+      where: {
+        usuarioId: createPetDto.usuarioId,
+      },
+    });
+
+    if (!endereco) {
+      throw new HttpException(
+        'Endereço não cadastrado, cadastre um endereço para cadastrar um pet',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return this.repository.pets.create({
       data: {
         nome: createPetDto.nome,
