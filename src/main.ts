@@ -10,12 +10,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('/api');
   app.enableCors({
-    origin: [
-      'https://www.animaverso.com.br/',
-      'https://api-animaverso.onrender.com/',
-    ],
-    allowedHeaders:
-      'XMLHttpRequest,X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin, Access-Control-Request-Method, Access-Control-Request-Headers',
+    origin: true,
+    allowedHeaders: '*',
     methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
     credentials: true,
   });
