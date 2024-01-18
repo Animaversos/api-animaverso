@@ -29,7 +29,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Public()
-  @Post('login')
+  @Post('login/')
   async realizarLogin(@Body() loginDto: LoginDto): Promise<LoginReturnDto> {
     return await this.authService.login(loginDto);
   }
