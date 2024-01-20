@@ -35,5 +35,5 @@ jobs:
 
           curl -X POST -H "Content-Type: application/json" \
             -H "Authorization: Bearer $RENDER_TOKEN" \
-            -d '{"build": true}' \
+            -d '{"clearCache": "do_not_clear"}' \
             https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys
