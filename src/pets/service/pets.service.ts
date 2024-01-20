@@ -225,6 +225,12 @@ export class PetsService {
 
   async remove(id: number) {
     await this.removeImage(id);
+    await this.repository.interessados.deleteMany({
+      where: {
+        id_pet: id,
+      },
+    });
+
     return await this.repository.pets.delete({
       where: {
         id: id,
