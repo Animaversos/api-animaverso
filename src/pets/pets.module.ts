@@ -3,8 +3,8 @@ import { PetsService } from './service/pets.service';
 import { PetsController } from './controller/pets.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { SupabaseModule } from '../storage/supabase/supabase.module';
-import { EmailService } from 'src/email/email.service';
-import { CupomService } from 'src/cupom/cupom.service';
+import { EmailService } from '../email/email.service';
+import { CupomService } from '../cupom/cupom.service';
 
 @Module({
   controllers: [PetsController],

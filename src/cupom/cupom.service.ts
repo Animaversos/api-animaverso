@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { SimNao } from '@prisma/client';
-import { Supabase } from 'src/storage/supabase/supabase';
+import { Supabase } from '../storage/supabase/supabase';
 
 @Injectable()
 export class CupomService {

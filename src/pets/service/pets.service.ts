@@ -3,8 +3,8 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { Supabase } from '../../storage/supabase/supabase';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { Filtros } from '../types/filter-pets.types';
-import { EmailService } from 'src/email/email.service';
-import { CupomService } from 'src/cupom/cupom.service';
+import { EmailService } from '../../email/email.service';
+import { CupomService } from '../../cupom/cupom.service';
 
 @Injectable()
 export class PetsService {

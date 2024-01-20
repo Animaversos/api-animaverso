@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { Public } from 'src/decorators/public.decorator';
+import { Public } from '../../decorators/public.decorator';
 import { CreateUsuarioDto } from '../dto/create-usuario.dto';
 import { UpdateEmailUsuarioDto } from '../dto/update-usuario.dto';
 import { UsuariosService } from '../usuarios.service';

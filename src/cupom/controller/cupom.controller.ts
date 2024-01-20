@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, HttpCode } from '@nestjs/common';
 import { CupomService } from '../cupom.service';
-import { Public } from 'src/decorators/public.decorator';
+import { Public } from '../../decorators/public.decorator';
 
 @Controller('cupom')
 export class CupomController {

@@ -7,7 +7,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
+import { CreateUsuarioDto } from '../../usuarios/dto/create-usuario.dto';
 import { Public } from '../../decorators/public.decorator';
 import { LoginReturnDto } from '../dto/login-return.dto';
 import { LoginDto } from '../dto/login.dto';
