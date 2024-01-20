@@ -33,13 +33,7 @@ jobs:
           RENDER_TOKEN=rnd_gXulYThtDZATJ8MI2NtO7QdkxNE9
           RENDER_SERVICE_ID=srv-cmiv73n109ks739osrd0
 
-          curl --request POST \
-     --url https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $RENDER_TOKEN' \
-     --header 'content-type: application/json' \
-     --data '
-{
-  "clearCache": "do_not_clear"
-}
-'
+          curl -X POST -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $RENDER_TOKEN" \
+            -d '{"build": true}' \
+            https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys
