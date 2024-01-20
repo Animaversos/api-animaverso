@@ -42,6 +42,5 @@ describe('PetsService', () => {
 
   it('should be defined', () => {
     expect(petsService).toBeDefined();
-    expect(1).toBe(2);
   });
 });
